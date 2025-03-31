@@ -12,18 +12,18 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.route("/register").post(registerUser);
+router.route("/signup").post(registerUser);
 
 router.route("/login").post(loginUser);
 
 router.route("/logout").post(verifyJWT, logOutUser);
 
-router.route("/refresh-token").post(refreshAccessToken);
+router.route("/refreshtoken").post(refreshAccessToken);
 
-router.route("/current-user").post(verifyJWT, getCurrentUser);
+router.route("/currentuser").get(verifyJWT, getCurrentUser);
 
-router.route("/change-password").post(verifyJWT, changeCurrentPassword);
+router.route("/changepassword").post(verifyJWT, changeCurrentPassword);
 
-router.route("/update-account").post(verifyJWT, updateAccountDetails);
+router.route("/updateaccount").patch(verifyJWT, updateAccountDetails);
 
 export default router;

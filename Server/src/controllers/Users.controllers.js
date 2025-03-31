@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+
 import Asynchandler from "../utils/AsyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/Users.models.js";
@@ -8,7 +8,7 @@ const generateAccessAndRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
     const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
     user.refreshToken = refreshToken;
     user.save({ validateBeforeSave: false });
     return { accessToken, refreshToken };
@@ -22,28 +22,31 @@ const generateAccessAndRefreshToken = async (userId) => {
 
 const registerUser = Asynchandler(async (req, res, next) => {
   //get user details from frontend
-  const { fullname, email, username, password } = req.body;
+  const { fullname, email, username, phone, password } = req.body;
   // Validation
   if (
-    [fullname, email, username, password].some((field) => field?.trim() === "")
+    [fullname, email, username, phone, password].some(
+      (field) => field?.trim() === ""
+    )
   ) {
     throw new ApiError(400, "All fields are required!");
   }
 
   //check if user already exists, email and username
   const existedUser = await User.findOne({
-    $or: [{ username }, { email }],
+    $or: [{ username }, { email }, { phone }],
   });
 
-  if (!existedUser) {
+  if (existedUser) {
     throw new ApiError(400, "User already exist!");
   }
 
   //create user object create entry in db
   const user = await User.create({
     fullname,
+    username,
     email,
-    username: username.toLowerCase(),
+    phone,
     password,
   });
   //remove and refresh token field from response
@@ -166,8 +169,8 @@ const refreshAccessToken = Asynchandler(async (req, res) => {
 
     return res
       .status(200)
-      .Cookie("accessToken", accessToken)
-      .Cookie("refreshToken", newrefreshToken)
+      .cookie("accessToken", accessToken)
+      .cookie("refreshToken", newrefreshToken)
       .json(
         new ApiResponse(
           200,
@@ -202,8 +205,8 @@ const getCurrentUser = Asynchandler(async (req, res) => {
 });
 
 const updateAccountDetails = Asynchandler(async (req, res) => {
-  const { fullname, email } = req.body;
-  if (!(fullname || email)) {
+  const { fullname, email, phone } = req.body;
+  if (!(fullname || email || phone)) {
     throw new ApiError(400, "All Fields are required!");
   }
   const user = await User.findByIdAndUpdate(
@@ -212,6 +215,7 @@ const updateAccountDetails = Asynchandler(async (req, res) => {
       $set: {
         fullname,
         email: email,
+        phone,
       },
     },
     { new: true }

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, LogOut } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ChevronDown,
@@ -16,6 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import axios from "axios";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -84,6 +85,45 @@ const Navbar = () => {
 
   const handleBack = () => {
     navigate(-1);
+  };
+
+  const [user, setUser] = useState();
+
+  // Check if user is authenticated
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        await axios
+          .get("http://localhost:5520/api/v2/user/currentuser", {
+            withCredentials: true,
+          })
+          .then((response) => {
+            setUser(response.data);
+            console.log(response);
+          })
+          .catch((err) => console.log(err));
+      } catch (error) {
+        console.error("Fetch user failed", error);
+        setUser(null);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  // Logout Handler
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:5520/api/v2/user/logout",
+        {},
+        { withCredentials: true }
+      );
+      setUser(null); // Remove user from state
+      navigate("/login"); // Redirect to login page
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
   };
 
   return (
@@ -155,12 +195,22 @@ const Navbar = () => {
                 Download Now
               </Button>
             </Link>
-            <Link to="/login">
-              <Button className="bg-[#002970] text-white rounded-full hover:bg-[#003d96]">
-                <UserCircle2Icon className="mr-2 w-5 h-5" />
-                Sign in
+            {user ? (
+              <Button
+                onClick={handleLogout}
+                className="bg-[#002970] text-white rounded-full hover:bg-[#003d96]"
+              >
+                <LogOut className="mr-2 w-5 h-5" />
+                Logout
               </Button>
-            </Link>
+            ) : (
+              <Link to="/login">
+                <Button className="bg-[#002970] text-white rounded-full hover:bg-[#003d96]">
+                  <UserCircle2Icon className="mr-2 w-5 h-5" />
+                  Sign in
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
 
@@ -231,18 +281,28 @@ const Navbar = () => {
                               Download Now
                             </Button>
                           </Link>
-                          <Link
-                            to="/login"
-                            onClick={() => {
-                              setIsMobileMenuOpen(false);
-                              setActiveSubmenu(null);
-                            }}
-                          >
-                            <Button className="w-full justify-start bg-[#002970] text-white hover:bg-[#003d96] text-sm">
-                              <UserCircle2Icon className="mr-2 w-4 h-4" />
-                              Sign in
+                          {user ? (
+                            <Button
+                              className="bg-[#002970] text-white rounded-full hover:bg-[#003d96]"
+                              onClick={handleLogout}
+                            >
+                              <UserCircle2Icon className="mr-2 w-5 h-5" />
+                              Logout
                             </Button>
-                          </Link>
+                          ) : (
+                            <Link
+                              to="/login"
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                setActiveSubmenu(null);
+                              }}
+                            >
+                              <Button className="w-full justify-start bg-[#002970] text-white hover:bg-[#003d96] text-sm">
+                                <UserCircle2Icon className="mr-2 w-4 h-4" />
+                                Sign in
+                              </Button>
+                            </Link>
+                          )}
                         </div>
                       </div>
                     </div>

@@ -19,6 +19,10 @@ const UserSchema = new Schema(
       lowercase: true,
       trim: true,
     },
+    phone: {
+      type: Number,
+      required: true,
+    },
     fullname: {
       type: String,
       required: true,
