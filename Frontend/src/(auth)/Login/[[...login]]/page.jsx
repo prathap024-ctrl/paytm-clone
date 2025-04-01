@@ -8,48 +8,55 @@ import { toast } from "sonner";
 import axios from "axios";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (!email) {
+    if (!formData.email) {
       toast.error("Email is required!");
       return;
     }
-    if (!password) {
+    if (!formData.password) {
       toast.error("Password is required!");
       return;
     }
 
+    setLoading(true);
     try {
-      const params = new URLSearchParams();
-      params.append("email", email);
-      params.append("password", password);
+      const response = await axios.post(
+        "http://localhost:5520/api/v2/user/login",
+        new URLSearchParams(formData),
+        {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          withCredentials: true,
+        }
+      );
+      console.log(response);
 
-      const config = {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      };
-      const response = await axios
-        .post("http://localhost:5520/api/v2/user/login", params, config)
-        .then((res) => {
-          navigate("/index");
-          toast.success("Login successful!", res);
-        })
-        .catch((err) => {
-          toast.error("Login failed.", err);
-        });
-        console.log(response);
-      } catch (error) {
+      toast.success("Login successful!");
+      navigate("/index", { replace: true });
+      setFormData({
+        email: "",
+        password: "",
+      });
+    } catch (error) {
       if (error.response?.status === 401) {
         toast.error("Invalid credentials");
       } else {
         toast.error("Login failed. Please try again later.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -65,27 +72,30 @@ const Login = () => {
           </p>
 
           <Input
+            name="email"
             placeholder="Email"
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formData.email}
+            onChange={handleChange}
             className="bg-white rounded-full"
           />
 
           <Input
+            name="password"
             placeholder="Password"
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.password}
+            onChange={handleChange}
             className="bg-white rounded-full"
             required
           />
 
           <Button
             onClick={handleLogin}
+            disabled={loading}
             className="w-full text-[#e8f8fd] bg-[#002970] hover:bg-[#002970] font-semibold py-3 rounded-full transition"
           >
-            Log In
+            {loading ? "Logging in..." : "Log In"}
           </Button>
 
           <div className="text-center text-sm space-y-2">

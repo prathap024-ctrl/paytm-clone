@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, LogOut } from "lucide-react";
+import { ChevronLeft, LogInIcon, LogOut, UserCircle2 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ChevronDown,
@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import axios from "axios";
+import { toast } from "sonner";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -84,30 +85,35 @@ const Navbar = () => {
   const isHomePage = location.pathname === "/";
 
   const handleBack = () => {
-    navigate(-1);
+    if (window.history.length > 2) {
+      navigate(-1, { replace: true });
+    } else {
+      navigate("/");
+    }
   };
 
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(null);
 
   // Check if user is authenticated
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        await axios
-          .get("http://localhost:5520/api/v2/user/currentuser", {
+        const response = await axios.get(
+          "http://localhost:5520/api/v2/user/currentuser",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
             withCredentials: true,
-          })
-          .then((response) => {
-            setUser(response.data);
-            console.log(response);
-          })
-          .catch((err) => console.log(err));
+          }
+        );
+        setUser(response.data);
+        console.log(response);
       } catch (error) {
         console.error("Fetch user failed", error);
         setUser(null);
       }
     };
-
     fetchUser();
   }, []);
 
@@ -119,8 +125,9 @@ const Navbar = () => {
         {},
         { withCredentials: true }
       );
-      setUser(null); // Remove user from state
-      navigate("/login"); // Redirect to login page
+      setUser(null);
+      navigate("/login", { replace: true });
+      toast.success("Logged Out Successfully!");
     } catch (error) {
       console.error("Logout failed", error);
     }
@@ -128,7 +135,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="outline-none w-full h-16 px-5 py-4 shadow-lg flex items-center bg-white fixed top-0 z-50">
+      <nav className="outline-none w-full h-16 px-4 py-4 shadow-lg flex items-center bg-white fixed top-0 z-50">
         {!isHomePage && (
           <Button
             onClick={handleBack}
@@ -137,27 +144,68 @@ const Navbar = () => {
             <ChevronLeft className="h-5 w-5" />
           </Button>
         )}
+
         <div className="w-full flex items-center justify-between text-sm">
           {/* Logo */}
-          <div>
+          <div className="">
             <Link to="/">
               <h1 className="text-xl font-semibold">Payments App</h1>
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="lg:hidden">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          <div className="lg:hidden flex">
+            <Link
+              to="/download-page"
+              onClick={() => setIsMobileMenuOpen(false)}
             >
-              {isMobileMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </Button>
+              <Button
+                variant="ghost"
+                className="text-[#002970] hover:bg-[#e8f8fd] mb-1 text-sm"
+              >
+                <Download className="mr-2 w-4 h-4" />
+                <span className="hidden">Download Now!</span>
+              </Button>
+            </Link>
+            {user ? (
+              <div>
+                <Button
+                  onClick={handleLogout}
+                  className=" bg-[#002970] text-white hover:bg-[#003d96] text-sm cursor-pointer"
+                >
+                  <LogOut className="mr-2 w-5 h-5" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <div className="space-x-2 flex">
+                <Link to="/login">
+                  <Button className=" bg-[#002970] text-white hover:bg-[#003d96] text-sm cursor-pointer">
+                    <LogInIcon className=" w-5 h-5" />
+                    <span className="hidden"> Sign in </span>
+                  </Button>
+                </Link>
+                <Link to="/signup">
+                  <Button className="bg-[#002970] text-white hover:bg-[#003d96] text-sm cursor-pointer">
+                    <UserCircle2 className=" w-5 h-5" />
+                    <span className="hidden"> Sign up </span>
+                  </Button>
+                </Link>
+              </div>
+            )}
+            {/* Mobile Menu Button */}
+            <div className="lg:hidden">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                {isMobileMenuOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </Button>
+            </div>
           </div>
 
           {/* Desktop Menu */}
@@ -196,20 +244,30 @@ const Navbar = () => {
               </Button>
             </Link>
             {user ? (
-              <Button
-                onClick={handleLogout}
-                className="bg-[#002970] text-white rounded-full hover:bg-[#003d96]"
-              >
-                <LogOut className="mr-2 w-5 h-5" />
-                Logout
-              </Button>
-            ) : (
-              <Link to="/login">
-                <Button className="bg-[#002970] text-white rounded-full hover:bg-[#003d96]">
-                  <UserCircle2Icon className="mr-2 w-5 h-5" />
-                  Sign in
+              <div>
+                <Button
+                  onClick={handleLogout}
+                  className="bg-[#002970] text-white rounded-full hover:bg-[#003d96]"
+                >
+                  <LogOut className="mr-2 w-5 h-5" />
+                  Logout
                 </Button>
-              </Link>
+              </div>
+            ) : (
+              <div className="space-x-2">
+                <Link to="/login">
+                  <Button className="bg-[#002970] text-white rounded-full hover:bg-[#003d96]">
+                    <LogInIcon className=" w-5 h-5" />
+                    Sign in
+                  </Button>
+                </Link>
+                <Link to="/signup">
+                  <Button className="bg-[#002970] text-white rounded-full hover:bg-[#003d96]">
+                    <UserCircle2 className=" w-5 h-5" />
+                    Sign up
+                  </Button>
+                </Link>
+              </div>
             )}
           </div>
         </div>
@@ -282,26 +340,30 @@ const Navbar = () => {
                             </Button>
                           </Link>
                           {user ? (
-                            <Button
-                              className="bg-[#002970] text-white rounded-full hover:bg-[#003d96]"
-                              onClick={handleLogout}
-                            >
-                              <UserCircle2Icon className="mr-2 w-5 h-5" />
-                              Logout
-                            </Button>
-                          ) : (
-                            <Link
-                              to="/login"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                setActiveSubmenu(null);
-                              }}
-                            >
-                              <Button className="w-full justify-start bg-[#002970] text-white hover:bg-[#003d96] text-sm">
-                                <UserCircle2Icon className="mr-2 w-4 h-4" />
-                                Sign in
+                            <div>
+                              <Button
+                                onClick={handleLogout}
+                                className="bg-[#002970] text-white rounded-full hover:bg-[#003d96]"
+                              >
+                                <LogOut className="mr-2 w-5 h-5" />
+                                Logout
                               </Button>
-                            </Link>
+                            </div>
+                          ) : (
+                            <div className="space-x-2">
+                              <Link to="/login">
+                                <Button className="bg-[#002970] text-white rounded-full hover:bg-[#003d96]">
+                                  <LogInIcon className=" w-5 h-5" />
+                                  Sign in
+                                </Button>
+                              </Link>
+                              <Link to="/signup">
+                                <Button className="bg-[#002970] text-white rounded-full hover:bg-[#003d96]">
+                                  <UserCircle2 className=" w-5 h-5" />
+                                  Sign up
+                                </Button>
+                              </Link>
+                            </div>
                           )}
                         </div>
                       </div>
@@ -311,31 +373,6 @@ const Navbar = () => {
               ))}
 
               {/* Main Menu Action Buttons (Visible when no submenu is active) */}
-              {activeSubmenu === null && (
-                <div className="mt-auto p-2 border-t border-gray-200">
-                  <Link
-                    to="/download-page"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-[#002970] hover:bg-[#e8f8fd] mb-1 text-sm"
-                    >
-                      <Download className="mr-2 w-4 h-4" />
-                      Download Now
-                    </Button>
-                  </Link>
-                  <Link
-                    to="/sign-in"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <Button className="w-full justify-start bg-[#002970] text-white hover:bg-[#003d96] text-sm cursor-pointer">
-                      <UserCircle2Icon className="mr-2 w-4 h-4" />
-                      Sign in
-                    </Button>
-                  </Link>
-                </div>
-              )}
             </div>
           </div>
         )}

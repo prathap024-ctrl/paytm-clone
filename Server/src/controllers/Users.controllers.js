@@ -1,4 +1,3 @@
-
 import Asynchandler from "../utils/AsyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/Users.models.js";
@@ -184,9 +183,13 @@ const refreshAccessToken = Asynchandler(async (req, res) => {
 });
 
 const changeCurrentPassword = Asynchandler(async (req, res) => {
-  const { oldPassword, newPassword } = req.body;
+  const { email, oldPassword, newPassword } = req.body;
   const user = await User.findById(req.user?._id);
   const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+
+  if (User.email === email) {
+    throw new ApiError(400, "Invalid email!");
+  }
 
   if (!isPasswordCorrect) {
     throw new ApiError(400, "Invalid Old Password!");

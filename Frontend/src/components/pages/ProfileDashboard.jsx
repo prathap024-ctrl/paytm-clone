@@ -14,7 +14,7 @@ const transactions = [
 const ProfileDashboard = () => {
   return (
     <Layout>
-      <div className="py-12 px-4 max-w-4xl mx-auto">
+      <div className="py-24 px-4 max-w-4xl mx-auto">
         <h2 className="text-2xl font-bold text-center text-[#002970] mb-6">Profile Dashboard</h2>
 
         {/* User Info Card */}
