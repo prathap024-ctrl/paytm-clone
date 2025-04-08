@@ -1,13 +1,23 @@
 import { CreditCard, Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useBalance } from "../Context/balanceContext";
 
 export const BalanceCard = () => {
-  const [showBalance, setShowBalance] = useState(false);
+  const { walletBalance, fetchBalance } = useBalance();
+  const [showBalance, setShowBalance] = useState(true); // 👈 this was missing
+
+  useEffect(() => {
+    fetchBalance(); // ✅ comes from context
+  }, [fetchBalance]);
+
+  const inrFormatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "INR",
+  });
 
   return (
     <div className="glass rounded-2xl p-6 relative overflow-hidden group">
-      {/* Decorative elements */}
       <div className="absolute -top-10 -right-10 w-40 h-40 bg-white rounded-full blur-2xl" />
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white to-[#e8f8fd] z-0" />
 
@@ -22,7 +32,7 @@ export const BalanceCard = () => {
             </div>
             <div className="flex gap-2 items-center">
               <button
-                onClick={() => setShowBalance(!showBalance)}
+                onClick={() => setShowBalance((prev) => !prev)}
                 className="p-2 rounded-full hover:bg-white transition-colors"
                 aria-label={showBalance ? "Hide balance" : "Show balance"}
               >
@@ -38,7 +48,7 @@ export const BalanceCard = () => {
           <div className="mb-1">
             {showBalance ? (
               <h2 key="balance" className="text-4xl font-semibold">
-                ₹24,680.75
+                {inrFormatter.format(Number(walletBalance).toFixed(2))}
               </h2>
             ) : (
               <h2 key="hidden" className="text-4xl font-semibold">
@@ -71,3 +81,5 @@ export const BalanceCard = () => {
     </div>
   );
 };
+
+export default BalanceCard;

@@ -321,51 +321,6 @@ const Navbar = () => {
                             </Link>
                           ))}
                         </div>
-
-                        {/* Submenu Action Buttons */}
-                        <div className="p-2 bg-white border-t border-gray-200">
-                          <Link
-                            to="https://play.google.com/store/apps/details?id=net.one97.paytm&pcampaignid=web_share"
-                            onClick={() => {
-                              setIsMobileMenuOpen(false);
-                              setActiveSubmenu(null);
-                            }}
-                          >
-                            <Button
-                              variant="ghost"
-                              className="w-full justify-start text-[#002970] hover:bg-[#e8f8fd] mb-1 text-sm"
-                            >
-                              <Download className="mr-2 w-4 h-4" />
-                              Download Now
-                            </Button>
-                          </Link>
-                          {user ? (
-                            <div>
-                              <Button
-                                onClick={handleLogout}
-                                className="bg-[#002970] text-white rounded-full hover:bg-[#003d96]"
-                              >
-                                <LogOut className="mr-2 w-5 h-5" />
-                                Logout
-                              </Button>
-                            </div>
-                          ) : (
-                            <div className="space-x-2">
-                              <Link to="/login">
-                                <Button className="bg-[#002970] text-white rounded-full hover:bg-[#003d96]">
-                                  <LogInIcon className=" w-5 h-5" />
-                                  Sign in
-                                </Button>
-                              </Link>
-                              <Link to="/signup">
-                                <Button className="bg-[#002970] text-white rounded-full hover:bg-[#003d96]">
-                                  <UserCircle2 className=" w-5 h-5" />
-                                  Sign up
-                                </Button>
-                              </Link>
-                            </div>
-                          )}
-                        </div>
                       </div>
                     </div>
                   )}

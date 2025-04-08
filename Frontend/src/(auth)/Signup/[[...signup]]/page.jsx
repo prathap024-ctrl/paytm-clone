@@ -52,7 +52,7 @@ const Signup = () => {
       );
 
       toast.success("Account created successfully!");
-
+      
       // Extract the success message instead of the entire object
       navigate("/index", { replace: true });
       setFormData({

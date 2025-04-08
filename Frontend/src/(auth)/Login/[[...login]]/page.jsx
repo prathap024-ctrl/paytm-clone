@@ -50,7 +50,7 @@ const Login = () => {
         password: "",
       });
     } catch (error) {
-      if (error.response?.status === 401) {
+      if (error.response?.status === 400) {
         toast.error("Invalid credentials");
       } else {
         toast.error("Login failed. Please try again later.");

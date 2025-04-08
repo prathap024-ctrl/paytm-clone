@@ -2,6 +2,19 @@ import Asynchandler from "../utils/AsyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/Users.models.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { Wallet } from "../models/Wallet.models.js";
+
+const createWalletIfNotExists = async (user) => {
+  const existing = await Wallet.findOne({ user: user._id });
+  if (!existing) {
+    await Wallet.create({
+      user: user._id,
+      upiId: `${user.username || user.email.split("@")[0]}@yourapp`,
+      walletBalance: 0,
+      upiProvider: "Payments App",
+    });
+  }
+};
 
 const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -48,6 +61,7 @@ const registerUser = Asynchandler(async (req, res, next) => {
     phone,
     password,
   });
+  await createWalletIfNotExists(user);
   //remove and refresh token field from response
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken"

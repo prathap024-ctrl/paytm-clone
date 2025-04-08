@@ -17,9 +17,11 @@ app.use(express.static("files"));
 app.use(cookieParser());
 
 //router import
-import userRouter from "./routes/user.routes.js"
+import userRouter from "./routes/user.routes.js";
+import walletRoutes from "./routes/wallet.routes.js";
 
 // routes
-app.use("/api/v2/user", userRouter)
+app.use("/api/v2/user", userRouter);
+app.use("/api/v2/wallet", walletRoutes);
 
 export { app };

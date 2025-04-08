@@ -141,7 +141,7 @@ const PasswordReset = () => {
       ) : (
         <div className="mt-64 space-y-6">
           <p className="text-2xl text-[#002970] text-center font-medium">
-            You cannot reset the password without login! <br /> we are working
+           <span className="font-bold">Sorry!</span> <br /> You cannot reset the password without login! <br /> we are working
             on it!
           </p>
           <p className="text-center text-xl text-[#002970] font-extrabold">

@@ -24,51 +24,60 @@ import ProfileDashboard from "./components/pages/ProfileDashboard";
 import PasswordReset from "./(auth)/passwordReset";
 import Signup from "./(auth)/Signup/[[...signup]]/page";
 import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
+import AddMoney from "./components/pages/AddMoney";
+import { BalanceProvider } from "./Context/balanceContext";
+
 
 const App = () => {
   return (
     <div>
-      <TooltipProvider>
-        <Toaster />
-        <Router>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/password-reset" element={<PasswordReset />} />
-            <Route path="*" element={<NotFound />} />
+      <BalanceProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router>
+            <Navbar />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/password-reset" element={<PasswordReset />} />
+              <Route path="*" element={<NotFound />} />
 
-            <Route element={<ProtectedRoute />}>
-              <Route path="/index" element={<IndexPage />} />
-              <Route path="/profile-dashboard" element={<ProfileDashboard />} />
-              <Route path="/send-money" element={<SendMoney />} />
-              <Route path="/scan-and-pay" element={<QRPaymentPage />} />
-              <Route path="/request-money" element={<RequestMoney />} />
-              <Route path="/payment-history" element={<PaymentHistory />} />
-              <Route
-                path="/recharge-bills"
-                element={<DTHWifiMobileRecharge />}
-              />
-              <Route
-                path="/bill-payment"
-                element={<ElectricityBillPayment />}
-              />
-              <Route
-                path="/credit-card-bills"
-                element={<CreditCardBillPayment />}
-              />
-              <Route path="/pay-bills" element={<PayBills />} />
-              <Route path="/bookings" element={<Bookings />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/wallet" element={<Wallet />} />
+              <Route element={<ProtectedRoute />}>
+                <Route path="/index" element={<IndexPage />} />
+                <Route
+                  path="/profile-dashboard"
+                  element={<ProfileDashboard />}
+                />
+                <Route path="/sendmoney" element={<SendMoney />} />
+                <Route path="/add-money" element={<AddMoney />} />
+                <Route path="/scan-and-pay" element={<QRPaymentPage />} />
+                <Route path="/request-money" element={<RequestMoney />} />
+                <Route path="/payment-history" element={<PaymentHistory />} />
+                <Route
+                  path="/recharge-bills"
+                  element={<DTHWifiMobileRecharge />}
+                />
+                <Route
+                  path="/bill-payment"
+                  element={<ElectricityBillPayment />}
+                />
+                <Route
+                  path="/credit-card-bills"
+                  element={<CreditCardBillPayment />}
+                />
+                <Route path="/pay-bills" element={<PayBills />} />
+                <Route path="/bookings" element={<Bookings />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/wallet" element={<Wallet />} />
 
-              <Route path="/transactions" element={<Transactions />} />
-            </Route>
-          </Routes>
-          <Footer />
-        </Router>
-      </TooltipProvider>
+                <Route path="/transactions" element={<Transactions />} />
+              </Route>
+            </Routes>
+            <Footer />
+          </Router>
+        </TooltipProvider>
+      </BalanceProvider>
     </div>
   );
 };

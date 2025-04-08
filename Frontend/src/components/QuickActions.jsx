@@ -37,7 +37,7 @@ const Action = ({
 
 export const QuickActions = () => {
   const paymentActions = [
-    { icon: Banknote, label: "Send Money", path: "/send-money", delay: 0 },
+    { icon: Banknote, label: "Send Money", path: "/sendmoney", delay: 0 },
     { icon: QrCode, label: "Scan & Pay", path: "/scan-and-pay", delay: 1 },
     {
       icon: ReceiptIndianRupee,

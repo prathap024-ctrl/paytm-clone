@@ -1,31 +1,49 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const TransactionSchema = new Schema(
+const transactionSchema = new mongoose.Schema(
   {
     user: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    merchant: {
-      type: Schema.Types.ObjectId,
-      ref: "Merchants",
+    sender: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    receiver: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    receiverName: {
+      type: String,
+    },
+    phone: {
+      type: String,
+    },
+    receiverUpiId: {
+      type: String,
     },
     amount: {
       type: Number,
       required: true,
     },
-    transactionType: {
-      type: String,
+    wallet: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Wallet",
       required: true,
-      trim: true,
     },
-    status: {
+    upiProvider: {
       type: String,
-      required: true,
-      trim: true,
+    },
+    type: {
+      type: String,
+      enum: ["add", "send", "receive"],
+      default: "send",
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-export const Transactions = mongoose.model("Transactions", TransactionSchema);
+export const Transactions = mongoose.model("Transactions", transactionSchema);

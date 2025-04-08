@@ -1,31 +1,52 @@
-import { ArrowDownLeft, ArrowUpRight, ChevronRight, Clock } from "lucide-react";
+import axios from "axios";
+import { ChevronRight, Clock } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const transactions = [
-  {
-    id: "t1",
-    name: "Rahul Sharma",
-    date: "Today, 2:34 PM",
-    amount: 2000,
-    type: "credit",
-  },
-  {
-    id: "t2",
-    name: "Mobile Recharge",
-    date: "Yesterday, 4:15 PM",
-    amount: 499,
-    type: "debit",
-  },
-  {
-    id: "t3",
-    name: "Electricity Bill",
-    date: "Feb 20, 9:30 AM",
-    amount: 1250,
-    type: "debit",
-  },
-];
+
 
 export const RecentTransactions = () => {
+  const [transactions, setTransactions] = useState([]);
+
+  const [filtered, setFiltered] = useState("all");
+
+  const fetchTransactions = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:5520/api/v2/wallet/history",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+          withCredentials: true,
+        }
+      );
+      setTransactions(res.data?.data || []);
+    } catch (err) {
+      console.error("Error fetching transactions", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
+  const userId = localStorage.getItem("userId");
+
+  const formatDateTime = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString("en-IN", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+  };
+
+  const inrFormatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "INR",
+  });
+
+
+
   return (
     <div className="mt-8">
       <div className="flex justify-between items-center mb-4">
@@ -44,50 +65,45 @@ export const RecentTransactions = () => {
         </Link>
       </div>
 
-      <div className="space-y-3">
-        {transactions.map((transaction) => (
-          <div key={transaction.id}>
-            <Link
-              to={`/transaction/${transaction.id}`}
-              className="flex items-center justify-between p-4 glass rounded-xl hover:bg-secondary/30 transition-all duration-300"
-            >
-              <div className="flex items-center">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    transaction.type === "credit"
-                      ? "bg-green-100 text-green-600"
-                      : "bg-red-100 text-red-600"
-                  }`}
-                >
-                  {transaction.type === "credit" ? (
-                    <ArrowDownLeft className="h-5 w-5" />
-                  ) : (
-                    <ArrowUpRight className="h-5 w-5" />
-                  )}
-                </div>
-                <div className="ml-3">
-                  <h4 className="font-medium text-sm">{transaction.name}</h4>
+
+      <div className="space-y-2">
+        {filtered.length > 0 ? (
+          transactions.map((tx) => {
+            const isSent = tx.sender !== userId;
+            const emoji = isSent ? "💸 Sent to" : "✅ Received from";
+            const name = tx.receiverName;
+            const phoneOrUpi = tx.phone || tx.receiverUpiId || "N/A";
+            const bankInfo = tx.upiProvider || "Payment App";
+
+            return (
+              <div
+                key={tx._id}
+                className="flex items-center justify-between p-3 rounded-lg bg-muted/30"
+              >
+                <div>
+                  <p className="font-medium">
+                    {emoji} {name}
+                  </p>
+                  <p className="text-xs text-muted-foreground">{phoneOrUpi}</p>
                   <p className="text-xs text-muted-foreground">
-                    {transaction.date}
+                    {formatDateTime(tx.createdAt)} • {bankInfo}
                   </p>
                 </div>
-              </div>
-              <div className="flex items-center">
-                <p
-                  className={`font-medium ${
-                    transaction.type === "credit"
-                      ? "text-green-600"
-                      : "text-red-600"
+                <div
+                  className={`text-md font-bold flex flex-col items-center ${
+                    isSent ? "text-red-600" : "text-green-700"
                   }`}
                 >
-                  {transaction.type === "credit" ? "+" : "-"}₹
-                  {transaction.amount.toLocaleString("en-IN")}
-                </p>
-                <ChevronRight className="h-4 w-4 ml-2 text-muted-foreground" />
+                  {inrFormatter.format(tx.amount)}
+                </div>
               </div>
-            </Link>
-          </div>
-        ))}
+            );
+          })
+        ) : (
+          <p className="text-muted-foreground text-center py-4">
+            No transactions found
+          </p>
+        )}
       </div>
     </div>
   );
