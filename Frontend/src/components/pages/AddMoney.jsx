@@ -31,7 +31,7 @@ const AddMoney = () => {
 
     try {
       await axios.post(
-        "http://localhost:5520/api/v2/wallet/addmoney",
+        "https://paytm-clone-backend-bdfj.onrender.com/api/v2/wallet/addmoney",
         new URLSearchParams(formData),
         {
           headers: {

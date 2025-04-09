@@ -34,7 +34,7 @@ const SendMoney = () => {
   const fetchTransactions = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5520/api/v2/wallet/history",
+        "https://paytm-clone-backend-bdfj.onrender.com",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -66,7 +66,7 @@ const SendMoney = () => {
     setLoading(true);
     try {
       await axios.post(
-        "http://localhost:5520/api/v2/wallet/send",
+        "https://paytm-clone-backend-bdfj.onrender.com",
         new URLSearchParams(formData),
         {
           headers: {
