@@ -44,7 +44,7 @@ const Login = () => {
       console.log(response);
 
       toast.success("Login successful!");
-      navigate("/index", { replace: true });
+      navigate("/index");
       setFormData({
         email: "",
         password: "",
