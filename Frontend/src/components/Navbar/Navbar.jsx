@@ -99,7 +99,7 @@ const Navbar = () => {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5520/api/v2/user/currentuser",
+          "https://paytm-clone-backend-bdfj.onrender.com/api/v2/user/currentuser",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -121,7 +121,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "http://localhost:5520/api/v2/user/logout",
+        "https://paytm-clone-backend-bdfj.onrender.com/api/v2/user/logout",
         {},
         { withCredentials: true }
       );
