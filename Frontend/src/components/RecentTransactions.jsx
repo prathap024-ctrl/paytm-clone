@@ -11,7 +11,7 @@ export const RecentTransactions = () => {
   const fetchTransactions = async () => {
     try {
       const res = await axios.get(
-        "https://paytm-clone-backend-bdfj.onrender.com",
+        "https://paytm-clone-backend-bdfj.onrender.com/api/v2/wallet/history",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

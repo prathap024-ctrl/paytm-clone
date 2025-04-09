@@ -8,12 +8,15 @@ export const BalanceProvider = ({ children }) => {
 
   const fetchBalance = async () => {
     try {
-      const res = await axios.get("https://paytm-clone-backend-bdfj.onrender.com", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        "https://paytm-clone-backend-bdfj.onrender.com/api/v2/wallet/balance",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+          withCredentials: true,
+        }
+      );
       setWalletBalance(Number(res.data?.data?.walletBalance || 0));
     } catch (err) {
       console.error("Error fetching balance", err);
