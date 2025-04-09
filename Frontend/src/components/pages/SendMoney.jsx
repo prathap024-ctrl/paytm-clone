@@ -2,7 +2,7 @@ import { Layout } from "@/components/Layout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { CreditCard, Eye, EyeOff, Search } from "lucide-react";
+import { Eye, EyeOff, Search } from "lucide-react";
 import { toast } from "sonner";
 
 import { useEffect, useState } from "react";
@@ -121,8 +121,8 @@ const SendMoney = () => {
   });
 
   const filteredTransactions = transactions.filter((tx) => {
-    const isSent = tx.sender !== userId;
-    if (filtered === "sent" && !isSent) return false;
+    const isSent = tx.sender === userId;
+    if (filtered === "sent" && isSent) return false;
     if (filtered === "received" && isSent) return false;
     const query = searchQuery.toLowerCase();
     return (

@@ -3,8 +3,6 @@ import { ChevronRight, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-
-
 export const RecentTransactions = () => {
   const [transactions, setTransactions] = useState([]);
 
@@ -45,8 +43,6 @@ export const RecentTransactions = () => {
     currency: "INR",
   });
 
-
-
   return (
     <div className="mt-8">
       <div className="flex justify-between items-center mb-4">
@@ -64,7 +60,6 @@ export const RecentTransactions = () => {
           <ChevronRight className="h-4 w-4 ml-1" />
         </Link>
       </div>
-
 
       <div className="space-y-2">
         {filtered.length > 0 ? (
