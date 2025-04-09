@@ -34,7 +34,7 @@ const Login = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:5520/api/v2/user/login",
+        "https://paytm-clone-backend-bdfj.onrender.com/api/v2/user/login",
         new URLSearchParams(formData),
         {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },

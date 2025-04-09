@@ -21,7 +21,7 @@ const PasswordReset = () => {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5520/api/v2/user/currentuser",
+          "https://paytm-clone-backend-bdfj.onrender.com/api/v2/user/currentuser",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -54,7 +54,7 @@ const PasswordReset = () => {
       console.log(formData); // Check the object structure
 
       await axios.post(
-        "http://localhost:5520/api/v2/user/changepassword",
+        "https://paytm-clone-backend-bdfj.onrender.com/api/v2/user/changepassword",
         new URLSearchParams(formData),
         {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -70,7 +70,7 @@ const PasswordReset = () => {
       });
 
       await axios.post(
-        "http://localhost:5520/api/v2/user/logout",
+        "https://paytm-clone-backend-bdfj.onrender.com/api/v2/user/logout",
         {},
         { withCredentials: true }
       );
