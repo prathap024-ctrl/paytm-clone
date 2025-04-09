@@ -43,8 +43,8 @@ const Login = () => {
       );
       console.log(response);
 
-      toast.success("Login successful!");
       navigate("/index");
+      toast.success("Login successful!");
       setFormData({
         email: "",
         password: "",

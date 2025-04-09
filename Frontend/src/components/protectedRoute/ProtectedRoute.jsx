@@ -8,7 +8,7 @@ const ProtectedRoute = () => {
   useEffect(() => {
     const verifyAuth = async () => {
       try {
-        const response = await axios.get("http://localhost:5520/api/v2/user/currentuser", {
+        const response = await axios.get("https://paytm-clone-backend-bdfj.onrender.com/api/v2/user/currentuser", {
           withCredentials: true,
         });
         if (response.status === 200 && response.data) {
