@@ -21,7 +21,7 @@ const PasswordReset = () => {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          "https://paytm-clone-backend-bdfj.onrender.com/api/v2/user/currentuser",
+          "http://localhost:5173/api/v2/user/currentuser",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

@@ -9,7 +9,7 @@ export const BalanceProvider = ({ children }) => {
   const fetchBalance = async () => {
     try {
       const res = await axios.get(
-        "https://paytm-clone-backend-bdfj.onrender.com/api/v2/wallet/balance",
+        "http://localhost:5173/api/v2/wallet/balance",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

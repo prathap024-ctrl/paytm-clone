@@ -34,7 +34,7 @@ const SendMoney = () => {
   const fetchTransactions = async () => {
     try {
       const res = await axios.get(
-        "https://paytm-clone-backend-bdfj.onrender.com/api/v2/wallet/history",
+        "http://localhost:5173/api/v2/wallet/history",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -66,7 +66,7 @@ const SendMoney = () => {
     setLoading(true);
     try {
       await axios.post(
-        "https://paytm-clone-backend-bdfj.onrender.com/api/v2/wallet/send",
+        "http://localhost:5173/api/v2/wallet/send",
         new URLSearchParams(formData),
         {
           headers: {
@@ -138,7 +138,7 @@ const SendMoney = () => {
         <div className="text-center">
           <div className="flex justify-center items-center">
             <div className="flex gap-2 items-center">
-            <p className="text-lg font-semibold">Wallet Balance</p>
+              <p className="text-lg font-semibold">Wallet Balance</p>
               <button
                 onClick={() => setShowBalance((prev) => !prev)}
                 className="p-2 rounded-full hover:bg-white transition-colors"

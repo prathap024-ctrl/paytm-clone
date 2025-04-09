@@ -43,7 +43,7 @@ const Signup = () => {
       console.log("Sending data:", formData);
 
       await axios.post(
-        "https://paytm-clone-backend-bdfj.onrender.com/api/v2/user/signup",
+        "http://localhost:5173/api/v2/user/signup",
         new URLSearchParams(formData),
         {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
